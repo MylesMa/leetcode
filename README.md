@@ -1,4 +1,4 @@
 leetcode
 ========
 
-Myles' code answer for leetcode
+code answer for leetcode
