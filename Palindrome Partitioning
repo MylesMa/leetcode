@@ -13,7 +13,7 @@ Return
   ]
 
 
-
+==================Before Optimization====================
 
 class Solution {
 public:
@@ -152,3 +152,51 @@ public:
     int start_;
 };
 
+==================After Optimization====================
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<string> > ret;
+        vector<string> a_list;
+        
+        comb(s, &a_list, &ret);
+        
+        return ret;
+    }
+    
+    bool isPalin(string s) {
+        int begin = 0;
+        int end = s.length() - 1;
+        
+        while(begin < end) {
+            if (s[begin++] != s[end--]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    void comb(string s, vector<string>* a_list, vector<vector<string> >* ret) {
+        if (s.empty()) {
+            ret->push_back(*a_list);
+            return;
+        }
+        
+        string sub_str;
+        for (int i = 0; i < s.length(); i++) {
+            sub_str.clear();
+            sub_str = s.substr(0, i + 1);
+            if (!isPalin(sub_str)) {
+                continue;
+            }
+            a_list->push_back(sub_str);
+            comb(s.substr(i + 1), a_list, ret);
+            a_list->pop_back();
+        }
+    }
+};
+
+===============================================
