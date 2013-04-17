@@ -1,0 +1,154 @@
+Palindrome Partitioning
+
+Given a string s, partition s such that every substring of the partition is a palindrome.
+
+Return all possible palindrome partitioning of s.
+
+For example, given s = "aab",
+Return
+
+  [
+    ["aa","b"],
+    ["a","a","b"]
+  ]
+
+
+
+
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        
+        vector<vector<string> > candi_vec;
+        // start_ indicate the first position palindrome turns up
+        vector<int> candi_palin_pos;
+        vector<string> a_vec;
+        string a_str;
+        for (int i = 0; i < s.length(); i++) {
+            a_str.clear();
+            a_str.push_back(s[i]);
+            a_vec.push_back(a_str);
+        }
+        candi_vec.push_back(a_vec);
+        candi_palin_pos.push_back(0);
+        
+        vector<vector<string> > merged_vec;
+        vector<int> merged_palin_pos; 
+        for (int i = 0; i < candi_vec.size(); i++) {
+            merged_vec.clear();
+            merged_palin_pos.clear();
+            mergePartition(candi_vec[i], candi_palin_pos[i], &merged_vec, &merged_palin_pos);
+            for (int j = 0; j < merged_vec.size(); j++) {
+                if (!isDupVec(candi_vec, merged_vec[j])) {
+                    candi_vec.push_back(merged_vec[j]);
+                    candi_palin_pos.push_back(merged_palin_pos[j]);
+                }
+            }
+        }
+        
+        return candi_vec;
+    }
+    
+    bool isDupVec(const vector<vector<string> >& raw_vec, const vector<string>& a_vec) {
+        for (int i = 0; i < raw_vec.size(); ++i) {
+            if (isEqual(raw_vec[i], a_vec)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    void printVector(const vector<string>& vec) {
+        cout << "print vector:";
+        for (int i = 0; i < vec.size(); i++) {
+            cout << vec[i] << ",";
+        }
+        cout << endl;
+    }
+    
+    bool isEqual(const vector<string>& vec1, const vector<string>& vec2) {
+        if (vec1.size() != vec2.size()) {
+            return false;
+        }
+        
+        for (int i = 0; i < vec1.size(); i++) {
+            if (vec1[i] != vec2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    void mergePartition(const vector<string>& raw_vec,
+                        int start_pos,
+                        vector<vector<string> >* ret_vec,
+                        vector<int>* palin_pos) {
+        ret_vec->clear();
+        vector<string> a_vec;
+        int a_pos;
+        string merged_str;
+        
+        for (int win_size = 1; win_size < raw_vec.size(); win_size++) {
+            for (int begin = start_pos; begin + win_size < raw_vec.size(); begin++) {
+                a_vec.clear();
+                a_pos = begin;
+                merged_str = mergeStr(raw_vec, begin, begin + win_size);
+                if (!isPalinStr(merged_str)) {
+                    continue;
+                }
+                for (int i = 0; i < raw_vec.size(); i++) {
+                    if (i == begin) {
+                        a_vec.push_back(merged_str);
+                        i = begin + win_size;
+                    } else {
+                        a_vec.push_back(raw_vec[i]);
+                    }
+                }
+                
+                palin_pos->push_back(a_pos);
+                ret_vec->push_back(a_vec);
+            }
+        }
+    }
+    
+    string mergeStr(const vector<string>& raw_vec, const int begin, const int end) {
+        string ret_str;
+        for (int i  = begin; i <= end; i++) {
+            ret_str.append(raw_vec[i]);
+        }
+        
+        return ret_str;
+    }
+    
+    bool isPalinVec(const vector<string> vec) {
+        for (int i  = 0; i < vec.size(); i++) {
+            if (!isPalinStr(vec[i])) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    bool isPalinStr(const string& s) {
+        if (s.empty()) {
+            return false;
+        }
+        
+        int begin = 0;
+        int end = s.length() - 1;
+        while (begin < end) {
+            if (s[begin++] != s[end--]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    int start_;
+};
+
