@@ -1,0 +1,76 @@
+
+Given a string s, partition s such that every substring of the partition is a palindrome.
+
+Return the minimum cuts needed for a palindrome partitioning of s.
+
+For example, given s = "aab",
+Return 1 since the palindrome partitioning ["aa","b"] could be produced using 1 cut.
+
+
+==================================================================================
+
+class Solution {
+public:
+   vector<vector<int> > is_palin_;
+   int minCut(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<int> a_palin;
+        is_palin_.clear();
+        for(int i = 0; i < s.length(); i++) {
+            a_palin.clear();
+            for (int j = 0; j < s.length(); j++) {
+                if (i == j) {
+                    a_palin.push_back(1);
+                } else {
+                    a_palin.push_back(-1);
+                }
+            }
+            is_palin_.push_back(a_palin);
+        }
+        
+        vector<int> min_cut(s.length(), s.length());
+        for (int i = 0; i < s.length(); i++) {
+            min_cut[i] = i;
+        }
+        
+        if (isPalin(s)) {
+            return 0;
+        }
+
+        for(int i = 1; i < s.length(); i++) {
+            for (int j = 0; j <= i; j++) {
+                if (is_palin_[j][i] == -1) {
+                    if (s[i] == s[j] && (is_palin_[j + 1][i - 1] || i - j < 2)) {
+                        is_palin_[j][i] = 1;
+                    } else {
+                        is_palin_[j][i] = 0;
+                    }
+                }
+                                
+                if (is_palin_[j][i] == 1) {
+                    if (j == 0) {
+                        min_cut[i] = 0;
+                    } else {
+                        min_cut[i] = min(1 + min_cut[j - 1], min_cut[i]);
+                    }
+                }
+            }
+        }
+
+        return min_cut[s.length() - 1];
+    }
+    
+    bool isPalin(string s) {
+        int begin = 0;
+        int end = s.length() - 1;
+        
+        while(begin < end) {
+            if (s[begin++] != s[end--]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
