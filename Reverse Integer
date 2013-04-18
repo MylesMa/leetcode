@@ -1,0 +1,50 @@
+Reverse Integer
+
+Reverse digits of an integer.
+
+Example1: x = 123, return 321
+Example2: x = -123, return -321
+
+=======================================
+
+
+class Solution {
+public:
+    int reverse(int x) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        
+        int flag;
+        if (x < 0) {
+            flag = -1;
+        } else {
+            flag = 1;
+        }
+        
+        int num = abs(x);
+        int ret = 0;
+        int count = 0;
+        while (num > 0) {
+            count++;
+            num /= 10;
+        }
+        
+        int a_num = abs(x);
+        while (a_num > 0) {
+            ret += a_num % 10 * GetTenCount(count);
+            count--;
+            a_num /= 10;
+        }
+        
+        return ret * flag;
+    }
+    
+    int GetTenCount(int count) {
+        int ret = 1;
+        for (int i = 1; i < count; i++) {
+            ret *= 10;
+        }
+        
+        return ret;
+    }
+};
