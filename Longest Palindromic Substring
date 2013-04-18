@@ -1,0 +1,42 @@
+Longest Palindromic Substring
+
+Given a string S, find the longest palindromic substring in S.
+You may assume that the maximum length of S is 1000, and there exists one unique longest palindromic substring.
+
+
+========================================
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        string ret;
+        string str;
+        for (int i  = 0; i < s.length(); i++) {            
+            str = GetMaxPalin(s, i, i);
+            if (str.size() > ret.size()) {
+                ret = str;
+            }
+            
+            str = GetMaxPalin(s, i, i + 1);
+            if (str.size() > ret.size()) {
+                ret = str;
+            }
+        }
+        
+        return ret;
+    }
+    
+    string GetMaxPalin (string s, int begin, int end) {
+        if (s[begin] != s[end] || begin < 0 || end > s.length() - 1) {
+            return "";
+        }
+        
+        do {
+            begin--;
+            end++;
+        } while (begin >= 0 && end <= s.length() - 1 && s[begin] == s[end]);
+        
+        return s.substr(begin + 1, end - begin - 1);
+    }
+};
