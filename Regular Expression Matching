@@ -1,0 +1,255 @@
+Regular Expression Matching
+
+Implement regular expression matching with support for '.' and '*'.
+
+'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") ? false
+isMatch("aa","aa") ? true
+isMatch("aaa","aa") ? false
+isMatch("aa", "a*") ? true
+isMatch("aa", ".*") ? true
+isMatch("ab", ".*") ? true
+isMatch("aab", "c*a*b") ? true
+
+===================================================
+
+class Solution {
+public:
+    bool isMatch(const char *s, const char *p) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function    
+        if (strlen(s) == 0) {
+            if (strlen(p) == 2 && p[1] == '*') {
+                return true;
+            }
+            if (strlen(p) == 1 && p[0] == '.') {
+                return true;
+            }
+        }
+        
+        string a(s);
+        string b(p);
+        
+        return isMatchComb(a, b);
+    }
+    
+    bool isMatchComb (string s, string p) {
+        if (s == p) {
+            return true;
+        }
+        
+        int p_begin = 0;
+        int s_begin = 0;
+        while (p[p_begin + 1] != '*' &&
+               (s[s_begin] == p[p_begin] || p[p_begin] == '.') &&
+               s_begin < s.length() &&
+               p_begin < p.length()) {
+            s_begin++;
+            p_begin++;
+        }
+        
+        if (p[p_begin + 1] != '*' && s[s_begin] != p[p_begin] && p[p_begin] != '.') {
+            return false;
+        }
+        
+        /*if (s_begin == s.length() && p_begin == p.length()) {
+            return true;
+        } else if (s_begin == s.length()){
+            return false;
+        } else if (p_begin == p.length()) {
+            return false;
+        }*/
+        
+        bool ret = false;
+        char ch;
+        int s_end;
+        if (p_begin + 2 < p.length()) {
+            ch = p[p_begin + 2];
+            if (findChar(s, ch, &s_end)) {
+                do {
+                    bool is_match_comb = isMatchComb(s.substr(s_end), p.substr(p_begin + 2));
+                    ret = ret || (isEqual(s.substr(s_begin, s_end - s_begin), p.substr(p_begin, 2)) &&
+                                  is_match_comb);                     
+                    if (ret) {
+                        return true;
+                    }
+                    s = s.substr(s_end + 1);
+                } while (findChar(s, ch, &s_end));
+            } else {
+                return false;
+            }
+        } else {
+            return isEqual(s.substr(s_begin), p.substr(s.length() -1, p_begin - s.length()));
+        }
+        
+        return false;
+    }
+    
+    bool isEqual(string s, string p) {
+        if (s.empty() || p[0] == '.') {
+            return true;
+        }
+        
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] != p[0]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    bool findChar(string s, char ch, int* pos) {
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] == ch) {
+                *pos = i;
+                return true;
+            }
+        }
+        *pos = -1;
+        return false;
+    }
+};
+
+===================================
+// Type your C++ code and click the "Run Code" button!
+// Your code output will be shown on the left.
+// Click on the "Show input" button to enter input data to be read (from stdin).
+
+#include <iostream>
+using namespace std;
+
+class Solution {
+public:
+    bool isMatch(const char *s, const char *p) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function    
+        if (strlen(s) == 0) {
+            cout << "<<<<<<<<<<<<<<<<<<< ";
+            if (strlen(p) == 2 && p[1] == '*'){
+                return true;
+            }
+        }
+        
+        string a(s);
+        string b(p);
+        
+        return isMatchComb(a, b);
+    }
+    
+    bool isMatchComb (string s, string p) {
+        cout << "============<begin>=============" << endl;
+        cout << s << "\t" << p <<endl;
+        if (s == p) {
+            return true;
+        }
+        
+        int p_begin = 0;
+        int s_begin = 0;
+        while (p[p_begin + 1] != '*' &&
+               (s[s_begin] == p[p_begin] || p[p_begin] == '.') &&
+               s_begin < s.length() &&
+               p_begin < p.length()) {
+            s_begin++;
+            p_begin++;
+            cout << "1" << endl;
+        }
+        
+        if (p[p_begin + 1] != '*' && s[s_begin] != p[p_begin] && p[p_begin] != '.') {
+            cout << "different char: " << s[s_begin] << "\t" << p[p_begin] << endl;
+            cout << "============<end>============" << endl;
+            return false;
+        }
+        
+        /*if (s_begin == s.length() && p_begin == p.length()) {
+            cout << "3" << endl;
+            return true;
+        } else if (s_begin == s.length()){
+            return false;
+        } else if (p_begin == p.length()) {
+            return false;
+        }*/
+        
+        
+        bool ret = false;
+        char ch;
+        int s_end;
+        if (p_begin + 2 < p.length()) {
+            ch = p[p_begin + 2];
+            if (findChar(s, ch, &s_end)) {
+                do {
+                    cout << "<<<<<<<<<<<<<<" << s_begin << "\t" << s_end << "\t" << s.substr(s_end) << "\t" << p.substr(p_begin + 2) << endl;
+                    bool is_match_comb = isMatchComb(s.substr(s_end), p.substr(p_begin + 2));
+                    cout << "isMatchComb: " << is_match_comb << endl;
+                    ret = ret || (isEqual(s.substr(s_begin, s_end - s_begin), p.substr(p_begin, 2)) &&
+                                  is_match_comb);
+                      
+                      
+                    cout << s.substr(s_begin, s_end - s_begin) << "\t" << p.substr(p_begin, 2)
+                        << "\tisEqual: " << isEqual(s.substr(s_begin, s_end - s_begin), p.substr(p_begin, 2)) << endl;
+
+                     
+                    if (ret) {
+                        cout << "============<end>============" << endl;
+                        return true;
+                    }
+                    s = s.substr(s_end + 1);
+                } while (findChar(s, ch, &s_end));
+            } else {
+                cout << "============<end>============" << endl;
+                return false;
+            }
+        } else {
+            cout << "============<end>============" << endl;
+            return isEqual(s.substr(s_begin), p.substr(s.length() -1, p_begin - s.length()));
+        }
+        
+        cout << "============<end>============" << endl;
+        return false;
+    }
+    
+    bool isEqual(string s, string p) {
+        if (s.empty() || p[0] == '.') {
+            return true;
+        }
+        
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] != p[0]) {
+                cout << s[i] << "\t" << p[0] << endl;
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    bool findChar(string s, char ch, int* pos) {
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] == ch) {
+                *pos = i;
+                return true;
+            }
+        }
+        *pos = -1;
+        return false;
+    }
+};
+
+int main() {
+    // Start typing your code here...
+    cout << "Hello world!" << endl;
+    Solution *solution = new Solution();
+    char* s = "aa";
+    char* p = "a*";
+    cout << "result: " << solution->isMatch(s, p) << endl;
+    
+    return 0;
+}
