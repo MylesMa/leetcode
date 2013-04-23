@@ -1,0 +1,81 @@
+Generate Parentheses
+
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+"((()))", "(()())", "(())()", "()(())", "()()()"
+
+===========================================================
+
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+      set<string> parenthesis_set = generate(n);
+      
+      vector<string> ret;
+      set<string>::iterator it = parenthesis_set.begin();
+      for (; it != parenthesis_set.end(); ++it) {
+          //if (isValid(*it)) {
+            ret.push_back(*it);
+          //}
+      }
+      
+      return ret;
+    }
+    
+    set<string> generate(int n) {
+        set<string> ret;
+        string a_ret;
+        
+        if (n == 0) {
+            a_ret = "";
+            ret.insert(a_ret);
+            return ret;
+        }
+        if (n == 1) {
+            a_ret = "()";
+            ret.insert(a_ret);
+            return ret;
+        }
+        
+        for (int i = 1; i <= n / 2; i++) {
+            string prefix;
+            string postfix;
+            for (int j = 1; j <= i; j++) {
+                prefix.append("(");
+                postfix.append(")");
+            }
+            
+            set<string> sub_ret1 = generate(n - i);
+            set<string> sub_ret2 = generate(i);
+            
+            set<string>::iterator it1 = sub_ret1.begin();            
+            for (; it1 != sub_ret1.end(); ++it1) {
+                a_ret.clear();
+                a_ret.append(prefix);
+                a_ret.append(*it1);
+                a_ret.append(postfix);
+                ret.insert(a_ret);
+                
+                set<string>::iterator it2 = sub_ret2.begin();
+                for (; it2 != sub_ret2.end(); ++it2) {
+                    a_ret.clear();
+                    a_ret.append(*it1);
+                    a_ret.append(*it2);
+                    ret.insert(a_ret);
+                    
+                    a_ret.clear();
+                    a_ret.append(*it2);
+                    a_ret.append(*it1);
+                    ret.insert(a_ret);
+                }
+            }            
+        }
+        
+        return ret;
+    }
+};
