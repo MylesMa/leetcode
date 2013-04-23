@@ -1,0 +1,51 @@
+Letter Combinations of a Phone Number
+
+Given a digit string, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below.
+
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+
+======================================================
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<string> ret;
+        map<char, string> digit_map;
+        digit_map.insert(make_pair('0', " "));
+        digit_map.insert(make_pair('2', "abc"));
+        digit_map.insert(make_pair('3', "def"));
+        digit_map.insert(make_pair('4', "ghi"));
+        digit_map.insert(make_pair('5', "jkl"));
+        digit_map.insert(make_pair('6', "mno"));
+        digit_map.insert(make_pair('7', "pqrs"));
+        digit_map.insert(make_pair('8', "tuv"));
+        digit_map.insert(make_pair('9', "wxyz"));
+        
+        if (digits.empty()) {
+            ret.push_back("");
+            return ret;
+        }
+        
+        string str;
+        string a_ret;    
+        
+        vector<string> sub_ret = letterCombinations(digits.substr(1));
+        str.clear();
+        str = digit_map[digits[0]];
+        for (int i = 0; i < str.length(); i++) {
+            for (int j = 0; j < sub_ret.size(); j++) {
+                a_ret.clear();
+                a_ret.push_back(str[i]);
+                a_ret.append(sub_ret[j]);
+                ret.push_back(a_ret);
+            }
+        }
+        
+        
+        return ret;
+    }
+};
