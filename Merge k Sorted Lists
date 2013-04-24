@@ -1,0 +1,65 @@
+Merge k Sorted Lists
+
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+
+==============================================
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *mergeKLists(vector<ListNode *> &lists) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (lists.empty()) {
+            return NULL;
+        }
+
+        bool flag = true;
+        int min_num;
+        ListNode* pre = NULL;
+        ListNode* head = NULL;
+        while (flag) {
+            min_num = INT_MAX;
+            int cur = -1;
+            for (int i = 0; i < lists.size(); i++) {
+                if (lists[i] != NULL && lists[i]->val <= min_num) {
+                    cur = i;
+                    min_num = lists[i]->val;
+                }
+            }
+            
+            if (cur == -1) {
+                return NULL;
+            }
+            
+            ListNode* node = new ListNode(min_num);
+            node->next = NULL;
+            if (head == NULL) {
+                head = node;
+                pre = node;
+            } else {
+                pre->next = node;
+                pre = node;
+            }
+            lists[cur] = lists[cur]->next;
+            
+            // check whether have non-null list
+            flag = false;
+            for (int i = 0; i < lists.size(); i++) {
+                if (lists[i] != NULL) {
+                    flag = true;
+                }
+            }
+        }
+        
+        return head;
+    }
+};
