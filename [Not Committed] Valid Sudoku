@@ -1,0 +1,82 @@
+Valid Sudoku
+
+Determine if a Sudoku is valid, according to: Sudoku Puzzles - The Rules.
+
+The Sudoku board could be partially filled, where empty cells are filled with the character '.'.
+
+[pic]
+
+A partially filled sudoku which is valid.
+
+===========================================================
+
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char> > &board) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        // row check
+        set<int> center_index;
+        center_index.insert(1);
+        center_index.insert(4);
+        center_index.insert(7);
+        
+        set<char> a_set;
+        set<char> b_set;
+        for (int i = 0; i < 9; i++) {
+            a_set.clear();
+            b_set.clear();
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    if (a_set.find(board[i][j]) != a_set.end()) {
+                        return false;
+                    } else {
+                        a_set.insert(board[i][j]);
+                    }                    
+                }
+                
+                if (board[j][i] != '.') {
+                    if (b_set.find(board[j][i]) != b_set.end()) {
+                        return false;
+                    } else {
+                        b_set.insert(board[j][i]);
+                    }
+                }
+                
+                
+                if (center_index.find(i) != center_index.end() &&
+                    center_index.find(j) != center_index.end() &&
+                    !isValidByCenter(board, i, j)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    bool isValidByCenter(vector<vector<char> > &board, int i, int j) {
+        vector<char> value;
+        value.push_back(board[i][j]);
+        value.push_back(board[i][j - 1]);
+        value.push_back(board[i][j + 1]);
+        value.push_back(board[i - 1][j]);
+        value.push_back(board[i - 1][j - 1]);
+        value.push_back(board[i - 1][j + 1]);
+        value.push_back(board[i + 1][j]);
+        value.push_back(board[i + 1][j - 1]);
+        value.push_back(board[i + 1][j + 1]);
+        
+        set<char> c_set;
+        for (int k = 0; k < value.size(); k++) {
+            if (value[k] != '.') {
+                if (c_set.find(value[k]) != c_set.end()) {
+                    return false;
+                } else {
+                    c_set.insert(value[k]);
+                }
+            }
+        }
+        return true;
+    }
+};
