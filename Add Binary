@@ -1,0 +1,68 @@
+Add Binary
+
+Given two binary strings, return their sum (also a binary string).
+
+For example,
+a = "11"
+b = "1"
+Return "100".
+
+===============================================
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        
+        int a_p = a.length() - 1;
+        int b_p = b.length() - 1;
+        int carry = 0;
+        int sum;
+        string ret;
+        
+        while (a_p >= 0 && b_p >= 0) {
+            sum = carry + a[a_p] - '0' + b[b_p] - '0';
+            ret += '0' + sum % 2;
+            carry = sum / 2;
+            
+            a_p--;
+            b_p--;
+        }
+        
+        while (a_p >= 0) {
+            sum = carry + a[a_p] - '0';
+            ret += '0' + sum % 2;
+            carry = sum / 2;
+            
+            a_p--;
+        }
+        
+        while (b_p >= 0) {
+            sum = carry + b[b_p] - '0';
+            ret += '0' + sum % 2;
+            carry = sum / 2;
+            
+            b_p--;
+        }
+        
+        if (carry != 0) {
+            ret += '0' + carry;
+        }
+        
+        
+        // reverse string
+        int left = 0;
+        int right = ret.length() -1;
+        char temp;
+        while (left < right) {
+            temp = ret[left];
+            ret[left] = ret[right];
+            ret[right] = temp;
+            
+            left++;
+            right--;
+        }
+        
+        return ret;
+    }
+};
