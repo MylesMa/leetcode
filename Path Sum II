@@ -1,0 +1,82 @@
+Path Sum II
+
+Given a binary tree and a sum, find all root-to-leaf paths where each path's sum equals the given sum.
+
+For example:
+Given the below binary tree and sum = 22,
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+return
+
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+====================================================================
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int> > pathSum(TreeNode *root, int sum) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int> > temp_ret;
+        vector<vector<int> > ret;
+        vector<int> a_ret;
+        
+        if (!root) {
+            return ret;
+        }
+        
+        if (root->val == sum && !root->left && !root->right) {
+            a_ret.push_back(root->val);
+            ret.push_back(a_ret);
+        }
+        
+        temp_ret.clear();
+        if (root->left /*&& root->left->val < sum*/) {
+            temp_ret = pathSum(root->left, sum - root->val);
+            if (!temp_ret.empty()) {
+                for (int i = 0; i < temp_ret.size(); i++) {
+                    a_ret.clear();
+                    a_ret.push_back(root->val);
+                    for (int j = 0; j < temp_ret[i].size(); j++) {
+                        a_ret.push_back(temp_ret[i][j]);
+                    }
+                    ret.push_back(a_ret);
+                }
+            }    
+        }
+        
+        temp_ret.clear();
+        if (root->right/* && root->right->val < sum*/) {
+            temp_ret = pathSum(root->right, sum - root->val);
+            if (!temp_ret.empty()) {
+                for (int i = 0; i < temp_ret.size(); i++) {
+                    a_ret.clear();
+                    a_ret.push_back(root->val);
+                    for (int j = 0; j < temp_ret[i].size(); j++) {
+                        a_ret.push_back(temp_ret[i][j]);
+                    }
+                    ret.push_back(a_ret);
+                }
+            }
+        }
+        
+        return ret;
+    }
+};
