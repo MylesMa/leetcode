@@ -1,0 +1,88 @@
+Restore IP Addresses
+
+Given a string containing only digits, restore it by returning all possible valid IP address combinations.
+
+For example:
+Given "25525511135",
+
+return ["255.255.11.135", "255.255.111.35"]. (Order does not matter)
+
+============================================================
+
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<string> ret;        
+        
+        getIp(s, &ret, 1);
+        
+        return ret;
+    }
+    
+    bool getIp(string s, vector<string>* ips, int pos) {
+        vector<string> tmp_ips;
+        string cur_str;
+        string remain_str;
+        if (pos == 4) {
+            if (isIpNum(s)) {
+                ips->push_back(s);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (s.empty()) {
+              return false;  
+            }
+            
+            for (int i = 1; i <= 3; i++) {
+                tmp_ips.clear();
+                cur_str.clear();
+                if (s.length() < i) {
+                    break;
+                }
+                cur_str = s.substr(0, i);
+                remain_str.clear();
+                remain_str = s.substr(i);
+                if (isIpNum(cur_str) &&
+                    getIp(remain_str, &tmp_ips, pos + 1)) {
+                    for (int j = 0; j < tmp_ips.size(); j++) {
+                        ips->push_back(cur_str + "." + tmp_ips[j]);
+                    }
+                }
+            }
+        }
+        
+        return !ips->empty();
+    }
+    
+    bool isIpNum(string s) {
+        if (s.empty()) {
+            return false;
+        } else if (s.length() == 1) {
+            return true;
+        } else if (s.length() == 2) {
+            if (s[0] != '0') {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (s.length() == 3) {
+            if (s[0] == '0') {
+                return false;
+            } 
+            
+            int num = (s[0] - '0') * 100 + (s[1] - '0') * 10 + s[2] - '0';
+            
+            if (num <= 255) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
+    }
+};
