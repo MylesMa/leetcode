@@ -1,0 +1,60 @@
+Interleaving String
+
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+
+For example,
+Given:
+s1 = "aabcc",
+s2 = "dbbca",
+
+When s3 = "aadbbcbcac", return true.
+When s3 = "aadbbbaccc", return false.
+
+
+=================================================================
+
+class Solution {
+public:
+    int s1_length, s2_length, s3_length;
+    
+    bool isInterleave(string s1, string s2, string s3) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function    
+        s1_length = s1.length();
+        s2_length = s2.length();
+        s3_length = s3.length();
+
+        if (s1_length + s2_length != s3_length) {
+            return false;
+        }
+        
+        vector<vector<bool> > match(s1_length + 1, vector<bool>(s2_length + 1, false));
+        
+        for (int i = 0; i < s1_length; i++) {
+            if (s1[i] == s3[i]) {
+                match[i + 1][0] = true;
+            } else {
+                break;
+            }
+        }
+        match[0][0] = true;
+        
+        for (int i = 0; i < s2_length; i++) {
+            if (s2[i] == s3[i]) {
+                match[0][i + 1] = true;
+            } else {
+                break;
+            }
+        }
+        
+        for (int i = 1; i <= s1_length; i++) {
+            for (int j = 1; j <= s2_length; j++) {
+                match[i][j] = (match[i - 1][j] && s1[i - 1] == s3[i + j - 1]) ||
+                              (match[i][j - 1] && s2[j - 1] == s3[i + j - 1]);
+                
+            }
+        }
+        
+        return match[s1_length][s2_length];
+    }
+};
