@@ -1,0 +1,120 @@
+
+Unique Binary Search Trees II
+
+Given n, generate all structurally unique BST's (binary search trees) that store values 1...n.
+
+For example,
+Given n = 3, your program should return all 5 unique BST's shown below.
+
+==========================================================================
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<TreeNode *> generateTrees(int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<TreeNode *> tree_node;
+                
+        if (n == 0) {
+            tree_node.push_back(NULL);
+            return tree_node;
+        }
+        
+        if (n == 1) {
+            return generate(1, 1);
+        }
+        
+        return generate(1, n);
+    }
+    
+    vector<TreeNode *> generate(int begin, int end) {
+        vector<TreeNode *> ret;
+        
+        if (begin == end) {
+            TreeNode* node = new TreeNode(begin);
+            node->left = NULL;
+            node->right = NULL;
+            ret.push_back(node);
+            
+            return ret;
+        }
+        
+        if (end - begin == 1) {
+            TreeNode* node_begin1 = new TreeNode(begin);
+            node_begin1->right = NULL;
+            node_begin1->left = NULL;
+            TreeNode* node_end1 = new TreeNode(end);
+            node_end1->right = NULL;
+            node_end1->left = NULL;
+            
+            node_begin1->right = node_end1;
+            ret.push_back(node_begin1);
+            
+            TreeNode* node_begin2 = new TreeNode(begin);
+            node_begin2->right = NULL;
+            node_begin2->left = NULL;
+            TreeNode* node_end2 = new TreeNode(end);
+            node_end2->right = NULL;
+            node_end2->left = NULL;
+            
+            node_end2->left = node_begin2;
+            ret.push_back(node_end2);
+            
+            return ret;
+        }
+        
+        vector<TreeNode*> left;
+        vector<TreeNode*> right;
+        for (int i = begin; i <= end; i++) {
+            left.clear();
+            right.clear();
+            if (i - 1 >= begin) {
+                left = generate(begin, i - 1);
+            }
+            if (i + 1 <= end) {
+                right = generate(i + 1, end);
+            }
+            
+            if (left.empty()) {
+                for (int k = 0; k < right.size(); k++) {
+                    TreeNode* node = new TreeNode(i);
+                    node->left = NULL;
+                    node->right = right[k];
+                    ret.push_back(node);
+                }
+            }
+            
+            if (right.empty()) {
+                for (int j = 0; j < left.size(); j++) {
+                    TreeNode* node = new TreeNode(i);
+                    node->right = NULL;
+                    node->left = left[j];
+                    ret.push_back(node);
+                }
+            }
+            
+            for (int j = 0; j < left.size(); j++) {
+                for (int k = 0; k < right.size(); k++) {
+                    TreeNode* node = new TreeNode(i);
+                    node->left = left[j];
+                    node->right = right[k];
+                    ret.push_back(node);
+                }
+            }
+        }
+        
+        return ret;
+    }
+};
+
+
+
