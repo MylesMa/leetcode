@@ -1,0 +1,79 @@
+Subsets
+
+Given a set of distinct integers, S, return all possible subsets.
+
+Note:
+
+Elements in a subset must be in non-descending order.
+The solution set must not contain duplicate subsets.
+For example,
+If S = [1,2,3], a solution is:
+
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+
+============================================================================
+
+class Solution {
+public:
+    vector<vector<int> > subsets(vector<int> &S) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int> > ret;
+        vector<int> a_ret;
+        
+        
+        if (S.empty()) {
+            return ret;
+        }
+        
+        sort(S.begin(), S.end());
+        
+        ret = sub(S, S.size());
+        ret.push_back(a_ret);
+        
+        return ret;
+    }
+    
+    vector<vector<int> > sub(vector<int> S, int k) {
+        vector<vector<int> > ret;
+        vector<int> a_ret;
+        vector<vector<int> > sub_ret;
+        
+        for (int i = 0; i < S.size(); i++) {
+            a_ret.clear();
+            a_ret.push_back(S[i]);
+            ret.push_back(a_ret);
+        }
+        
+        if (k == 1) {
+            return ret;
+        }
+        
+        sub_ret.clear();
+        sub_ret = sub(S, k - 1);
+        for (int j = 0; j < sub_ret.size(); j++) {
+            for (int m = 0; m < S.size(); m++) {
+                if (S[m] >= sub_ret[j][0]) {
+                    break;
+                }
+                a_ret.clear();
+                a_ret.push_back(S[m]);
+                for (int t = 0; t < sub_ret[j].size(); t++) {
+                    a_ret.push_back(sub_ret[j][t]);
+                }
+                ret.push_back(a_ret);
+            }
+        }
+        
+        return ret;
+    }
+};
