@@ -1,0 +1,69 @@
+Multiply Strings
+
+Given two numbers represented as strings, return multiplication of the numbers as a string.
+
+Note: The numbers can be arbitrarily large and are non-negative.
+
+==================================================================================
+
+
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (num1.empty() ||
+            num2.empty() ||
+            num1 == "0" ||
+            num2 == "0") {
+            return "0";
+        }
+        
+        reverseStr(&num1);
+        reverseStr(&num2);
+        
+        string ret;
+        int carry = 0;
+        int multi = 0;
+        vector<int> num(num1.length() + num2.length(), 0);
+        
+        for(int i = 0; i < num1.length() + num2.length(); i++) {
+            multi = 0;
+            for (int j = 0; j < num1.length(); j++) {
+                if (i - j < num2.length() && i - j >= 0) {
+                    multi += (num1[j] - '0') * (num2[i - j] - '0');
+                }
+            }
+            multi += carry;
+            num[i] = multi % 10;
+            carry = multi / 10;
+        }
+        
+        bool flag = false;
+        for (int i = num1.length() + num2.length() - 1; i >= 0; i--) {
+            if (num[i] == 0 && !flag) {
+                continue;
+            } else {
+                flag = true;
+            }
+            ret += '0' + num[i];
+        }
+        
+        return ret;
+    }
+    
+    void reverseStr(string* str) {
+        int begin = 0;
+        int end = str->length() - 1;
+        
+        char tmp;
+        while (begin < end) {
+            tmp = (*str)[begin];
+            (*str)[begin] = (*str)[end];
+            (*str)[end] = tmp;
+            
+            begin++;
+            end--;
+        }
+    }
+};
