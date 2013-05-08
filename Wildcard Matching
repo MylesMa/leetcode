@@ -1,0 +1,109 @@
+Wildcard Matching
+
+Implement wildcard pattern matching with support for '?' and '*'.
+
+'?' Matches any single character.
+'*' Matches any sequence of characters (including the empty sequence).
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") ? false
+isMatch("aa","aa") ? true
+isMatch("aaa","aa") ? false
+isMatch("aa", "*") ? true
+isMatch("aa", "a*") ? true
+isMatch("ab", "?*") ? true
+isMatch("aab", "c*a*b") ? false
+
+
+The following resolution cant pass large cases
+=========================================================================
+
+class Solution {
+public:
+    bool isMatch(const char *s, const char *p) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (*s == '\0' && *p == '\0') {
+            return true;
+        }
+        
+        if (*s == '\0') {
+            if (*p == '*' && *(p + 1) == '\0') {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        if (*p == '\0') {
+            return false;
+        }
+        
+        return isMatchStr(string(s), string(p));
+    }
+    
+    bool isMatchStr(string s, string p) {
+        vector<vector <bool> > match(p.length() + 1,
+                                     vector<bool>(s.length() + 1, false));
+        
+        if (p[0] == '*') {
+            match[1][0] = true;
+        }
+                
+        for (int i = 1; i <= s.length(); i++) {
+            if (isValid(s, p[0], 0, i)) {
+                match[1][i] = true;
+            } else {
+                break;
+            }
+        }
+                
+        for (int i = 2; i <= p.length(); i++) {
+            for (int j = 0; j <= s.length(); j++) {
+                if (match[i][j]) {
+                    continue;
+                }
+                for (int k = 0; k <= j; k++) {
+                    if ((match[i - 1][k] && isValid(s, p[i - 1], k, j))) {
+                        match[i][j] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        
+        return match[p.length()][s.length()];
+    }
+    
+    
+    bool isValid(string s, char ch, int begin, int end) {
+        if (begin > end) {
+            return false;
+        }
+        
+        if (ch == '*') {
+            return true;
+        }
+        
+        if (begin == end) {
+            return false;
+        }
+        
+        if (begin < 0) {
+            return false;
+        }
+        
+        // only char
+        if (begin + 1 == end) {
+            return ch == '?' || ch == s[begin];
+        }
+        
+        return false;
+    }
+};
