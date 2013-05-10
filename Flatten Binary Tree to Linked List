@@ -1,0 +1,91 @@
+Flatten Binary Tree to Linked List
+
+Given a binary tree, flatten it to a linked list in-place.
+
+For example,
+Given
+
+         1
+        / \
+       2   5
+      / \   \
+     3   4   6
+The flattened tree should look like:
+   1
+    \
+     2
+      \
+       3
+        \
+         4
+          \
+           5
+            \
+             6
+
+
+===================================================================
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void flatten(TreeNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (!root) {
+            return;
+        }
+        
+        flatTree(root);
+    
+        return;
+    }
+    
+    void flatTree(TreeNode* root) {
+        if (!root) {
+            return;
+        }    
+        
+        if (!root->left && !root->right) {
+            return;
+        }
+        
+        if (!root->left && root->right) {
+            flatTree(root->right);
+            return;
+        }
+        
+        if (root->left && !root->right) {
+            flatTree(root->left);
+            root->right = root->left;
+            root->left = NULL;
+            
+            return;
+        }
+                
+        flatTree(root->left);
+        flatTree(root->right);
+        
+        TreeNode* r = root->right;
+        TreeNode* l = root->left;
+        root->right = root->left;
+        root->left = NULL;
+        
+        TreeNode* node = root;
+        while (node->right) {
+            node = node->right;
+        }
+        
+        node->right = r;
+        
+        return;
+    }
+};
