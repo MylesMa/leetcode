@@ -1,0 +1,65 @@
+Reverse Linked List II
+
+
+Reverse a linked list from position m to n. Do it in-place and in one-pass.
+
+For example:
+Given 1->2->3->4->5->NULL, m = 2 and n = 4,
+
+return 1->4->3->2->5->NULL.
+
+Note:
+Given m, n satisfy the following condition:
+1 ? m ? n ? length of list.
+
+=======================================================================
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (m == n || !head) {
+            return head;
+        }
+        
+        ListNode* pre = NULL;
+        ListNode* front = NULL;
+        ListNode* tail = NULL;
+        int index = 1;
+        ListNode* ptr = head;
+        
+        while (ptr && index <= n) {
+            if (index < m) {
+                pre = ptr;
+                ptr = ptr->next;
+            } else if (index == m) {
+                front = ptr;
+                tail = ptr;
+                ptr = ptr->next;
+            } else {
+                if (pre) {
+                    pre->next = ptr;
+                } else {
+                    head = ptr;
+                }
+                tail->next = ptr->next;
+                ptr->next = front;
+                front = ptr;
+                ptr = tail->next;
+            }
+            
+            index++;
+        }
+        
+        return head;
+    }
+};
