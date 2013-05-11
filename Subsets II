@@ -1,0 +1,86 @@
+Subsets II
+
+Given a collection of integers that might contain duplicates, S, return all possible subsets.
+
+Note:
+
+Elements in a subset must be in non-descending order.
+The solution set must not contain duplicate subsets.
+For example,
+If S = [1,2,2], a solution is:
+
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+
+===============================================================================================
+
+class Solution {
+public:
+   
+    
+    vector<vector<int> > subsetsWithDup(vector<int> &S) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int> > ret;
+        sort(S.begin(), S.end());
+        
+        vector<int> is_all_same(S.size(), 0);
+        
+        for(int i = 1; i < S.size(); i++) {
+            if (S[i] == S[i - 1]) {
+                is_all_same[i] = is_all_same[i - 1] + 1;
+            }
+        }
+        
+        ret = subset(S, is_all_same, S.size() - 1);
+        
+        return ret;
+    }
+    
+    
+    vector<vector<int> > subset(vector<int> &S, vector<int> is_all_same, int end) {
+        vector<vector<int> > ret;
+        vector<vector<int> > sub_ret;
+        vector<int> a_ret;
+        
+        if (end >= S.size()) {
+            return ret;
+        }
+        
+        if (end == 0) {
+            ret.push_back(a_ret);
+            a_ret.push_back(S[end]);
+            ret.push_back(a_ret);
+            
+            return ret;
+        }
+        
+        sub_ret = subset(S, is_all_same, end - 1);
+        
+        for (int i = 0; i < sub_ret.size(); i++) {
+            ret.push_back(sub_ret[i]);
+        }
+        
+        int count = 0;
+        for (int i = 0; i < sub_ret.size(); i++) {
+            count = 0;
+            for (int j = 0; j < sub_ret[i].size(); j++) {
+                if (sub_ret[i][j] == S[end]) {
+                    count++;
+                }
+            }
+            if (count == is_all_same[end]) {
+                sub_ret[i].push_back(S[end]);
+                ret.push_back(sub_ret[i]);
+            }
+        }
+        
+        return ret;
+    }
+};
