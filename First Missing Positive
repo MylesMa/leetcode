@@ -1,0 +1,54 @@
+First Missing Positive
+
+Given an unsorted integer array, find the first missing positive integer.
+
+For example,
+Given [1,2,0] return 3,
+and [3,4,-1,1] return 2.
+
+Your algorithm should run in O(n) time and uses constant space.
+
+===================================================================================
+
+class Solution {
+public:
+    int firstMissingPositive(int A[], int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        
+        if (n == 0) {
+            return 1;
+        }
+        
+        int max = -1;
+        for (int i = 0; i < n; i++) {
+            if (A[i] > max) {
+                max = A[i];
+            }
+        }
+        
+        if (max <= 0) {
+            max = 1;
+        }
+        
+        vector<bool> is_hit(max + 2, false);
+        
+        for (int i = 0; i < n; i++) {
+            if (A[i] <= 0) {
+                continue;
+            }
+            
+            is_hit[A[i]] = true;
+        }
+        
+        int ret = -1;
+        for (int i = 1; i < is_hit.size(); i++) {
+            if (!is_hit[i]) {
+                ret = i;
+                break;
+            }
+        }
+        
+        return ret;
+    }
+};
