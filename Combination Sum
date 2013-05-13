@@ -1,0 +1,79 @@
+Combination Sum
+
+
+Given a set of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+The same repeated number may be chosen from C unlimited number of times.
+
+Note:
+
+All numbers (including target) will be positive integers.
+Elements in a combination (a1, a2, � , ak) must be in non-descending order. (ie, a1 ? a2 ? � ? ak).
+The solution set must not contain duplicate combinations.
+For example, given candidate set 2,3,6,7 and target 7, 
+A solution set is: 
+[7] 
+[2, 2, 3] 
+
+=========================================================
+
+class Solution {
+public:
+    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int> > ret;
+        
+        
+        if (candidates.empty()) {
+            return ret;
+        }
+        
+        sort(candidates.begin(), candidates.end());
+        
+        ret = comb(candidates, 0, target);
+        
+        return ret;
+    }
+    
+    vector<vector<int> > comb(vector<int> cand, int begin, int target) {
+        vector<vector<int> > ret;
+        vector<vector<int> > sub;
+        vector<int> a_ret;
+        
+        if (begin >= cand.size() ||
+            cand[begin] > target) {
+            return ret;
+        }
+        
+        if (cand[begin] == target) {
+            a_ret.push_back(cand[begin]);
+            ret.push_back(a_ret);
+            return ret;
+        }
+        
+        sub.clear();
+        sub = comb(cand, begin, target - cand[begin]);
+        for (int k = 0; k < sub.size(); k++) {
+            a_ret.clear();
+            a_ret.push_back(cand[begin]);
+            for (int j = 0; j < sub[k].size(); j++) {
+                a_ret.push_back(sub[k][j]);
+            }
+            ret.push_back(a_ret);
+        }
+            
+        
+        sub.clear();
+        sub = comb(cand, begin + 1, target);
+        for (int k = 0; k < sub.size(); k++) {
+            a_ret.clear();
+            for (int j = 0; j < sub[k].size(); j++) {
+                a_ret.push_back(sub[k][j]);
+            }
+            ret.push_back(a_ret);
+        }
+        
+        return ret;
+    }
+};
