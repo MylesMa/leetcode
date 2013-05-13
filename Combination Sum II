@@ -1,0 +1,106 @@
+Combination Sum II
+
+Given a collection of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+Each number in C may only be used once in the combination.
+
+Note:
+
+All numbers (including target) will be positive integers.
+Elements in a combination (a1, a2, � , ak) must be in non-descending order. (ie, a1 ? a2 ? � ? ak).
+The solution set must not contain duplicate combinations.
+For example, given candidate set 10,1,2,7,6,1,5 and target 8, 
+A solution set is: 
+[1, 7] 
+[1, 2, 5] 
+[2, 6] 
+[1, 1, 6] 
+
+====================================================================================================
+
+
+class Solution {
+public:
+    vector<vector<int> > combinationSum2(vector<int> &num, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int> > ret;
+        if (num.empty()) {
+            return ret;
+        }
+        
+        sort(num.begin(), num.end());
+        
+        vector<int> same_count(num.size(), 0);
+        
+        for (int i = num.size() - 2; i >= 0; i--) {
+            if (num[i] == num[i + 1]) {
+                same_count[i] = same_count[i + 1] + 1;
+            }
+        }
+        
+        ret = comb(num, same_count, 0, target);
+        
+        return ret;
+    }
+    
+    vector<vector<int> > comb(vector<int> cand, vector<int> same_count, int begin, int target) {
+        vector<vector<int> > ret;
+        vector<vector<int> > sub;
+        vector<int> a_ret;
+        
+        if (begin >= cand.size() ||
+            cand[begin] > target) {
+            return ret;
+        }
+        
+        if (cand[begin] == target) {
+            a_ret.push_back(cand[begin]);
+            if (isValid(same_count, a_ret, begin)) {
+                ret.push_back(a_ret);
+            }
+        }
+        
+        sub.clear();
+        sub = comb(cand, same_count, begin, target - cand[begin]);
+        for (int k = 0; k < sub.size(); k++) {
+            a_ret.clear();
+            a_ret.push_back(cand[begin]);
+            for (int j = 0; j < sub[k].size(); j++) {
+                a_ret.push_back(sub[k][j]);
+            }
+            
+            if (isValid(same_count, a_ret, begin)) {
+                ret.push_back(a_ret);
+            }
+        }
+            
+        
+        sub.clear();
+        sub = comb(cand, same_count, begin + 1, target);
+        for (int k = 0; k < sub.size(); k++) {
+            a_ret.clear();
+            for (int j = 0; j < sub[k].size(); j++) {
+                a_ret.push_back(sub[k][j]);
+            }
+            ret.push_back(a_ret);
+        }
+        
+        return ret;
+    }
+    
+    bool isValid(vector<int> same_count, vector<int> a_ret, int begin) {
+        int count = 0;
+        for (int i = 1; i < a_ret.size(); i++) {
+            if (a_ret[i] == a_ret[i - 1]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        
+        return same_count[begin] == count;
+    }
+};
+
+
