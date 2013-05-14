@@ -1,0 +1,82 @@
+Trapping Rain Water
+
+Given n non-negative integers representing an elevation map where the width of each bar is 1,
+compute how much water it is able to trap after raining.
+
+For example, 
+Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+
+[pic]
+
+============================================================================================
+
+class Solution {
+public:
+    int trap(int A[], int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (n == 0) {
+            return 0;
+        }
+        
+        int sum = 0;
+        int tmp_sum = 0;
+        int left = -1;      
+        for (int i = 0; i < n; i++) {
+            if (left == -1) {
+                left = i;
+                continue;
+            }
+            
+            if (A[left] <= A[i]) {
+                sum += calWater(A, left, i);
+                left = i;
+                tmp_sum = 0;
+            }
+        }
+        
+        int begin;
+        int right = n - 1;
+        do {
+            sum += calSubWater(A, left, right, &begin);
+            right = begin;            
+        } while (begin > left);
+                
+        return sum;
+    }
+    
+    int calSubWater(int A[], int left, int right, int* begin) {
+        int sum = 0;
+        if (right - left == 1) {
+            *begin = left;
+            return sum;
+        }
+        for (int i = right; i >= left; i--) {
+            if (A[i] > A[right]) {
+                sum = A[right] * (right - i - 1);
+                for (int j = i + 1; j < right; j++) {
+                    sum -= A[j];
+                }
+                *begin = i;
+                return sum;
+            }
+        }
+        *begin = left;
+        
+        return sum;
+    }
+    
+    int calWater(int A[], int left, int right) {
+        int sum = 0;
+        if (A[left] <= A[right]) {
+            sum = A[left] * (right - left - 1);
+            if (sum == 0) {
+                return sum;
+            }
+            for (int i = left + 1; i < right; i++) {
+                sum -= A[i];
+            }
+        }
+        return sum;
+    }
+};
