@@ -1,0 +1,64 @@
+Maximal Rectangle
+
+Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing all ones and return its area.
+
+=============================================================
+
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char> > &matrix) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int area = 0;
+        int max = 0;
+        for (int begin_i = 0; begin_i < matrix.size(); begin_i++) {
+            for (int begin_j = 0; begin_j < matrix[begin_i].size(); begin_j++) {
+                if (matrix[begin_i][begin_j] == '0') {
+                    continue;
+                }
+                
+                for (int end_i = begin_i; end_i < matrix.size(); end_i++) {
+                    if (!isValidRow(matrix, begin_i, begin_j, end_i)) {
+                        break;
+                    }
+                    
+                    for (int end_j = begin_j; end_j < matrix[end_i].size(); end_j++) {
+                        if (isValidArea(matrix, begin_i, begin_j, end_i, end_j)) {
+                            area = (end_i - begin_i + 1) * (end_j - begin_j + 1);
+                            if (max < area) {
+                                max = area;
+                            }
+                        } else {
+                            break;  
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+        return max;
+    }
+    
+    bool isValidRow(vector<vector<char> > &matrix, int begin_i, int begin_j, int end_i) {
+        for (int i = begin_i; i < end_i; i++) {
+            if (matrix[i][begin_j] == '0') {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    bool isValidArea(vector<vector<char> > &matrix, int begin_i, int begin_j, int end_i, int end_j) {
+        for (int i = begin_i; i <= end_i; i++) {
+            for (int j = begin_j; j <= end_j; j++) {
+                if (matrix[i][j] == '0') {
+                    return false;
+                }
+            }
+        }
+        
+        return true;    
+    }
+};
