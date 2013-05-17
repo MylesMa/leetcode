@@ -1,0 +1,77 @@
+Sum Root to Leaf Numbers
+
+Given a binary tree containing digits from 0-9 only, each root-to-leaf path could represent a number.
+
+An example is the root-to-leaf path 1->2->3 which represents the number 123.
+
+Find the total sum of all root-to-leaf numbers.
+
+For example,
+
+    1
+   / \
+  2   3
+The root-to-leaf path 1->2 represents the number 12.
+The root-to-leaf path 1->3 represents the number 13.
+
+Return the sum = 12 + 13 = 25.
+
+===========================================================================
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int sumNumbers(TreeNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (!root) {
+            return 0;
+        }
+                
+        vector<int> result;
+        vector<int> trace;
+        sumTree(root, &result, trace);
+        
+        int ret = 0;
+        for (int i = 0; i < result.size(); i++) {
+            ret += result[i];
+        }
+        
+        return ret;
+    }
+    
+    void sumTree(TreeNode* root, vector<int>* result, vector<int> trace) {
+        if (!root->left && !root->right) {
+            int r = 0;
+            for (int i = 0; i < trace.size(); i++) {
+                r += trace[i] * 10;
+            }
+            
+            r += root->val;
+            result->push_back(r);
+            
+            return;
+        }
+        
+        for (int i = 0; i < trace.size(); i++) {
+            trace[i] = trace[i] * 10;
+        }
+        trace.push_back(root->val);
+        
+        if (root->left) {
+            sumTree(root->left, result, trace);
+        }
+        
+        if (root->right) {
+            sumTree(root->right, result, trace);
+        }
+    }
+};
