@@ -1,0 +1,134 @@
+Word Ladder II
+
+
+Given two words (start and end), and a dictionary, find all shortest transformation sequence(s) from start to end, such that:
+
+Only one letter can be changed at a time
+Each intermediate word must exist in the dictionary
+For example,
+
+Given:
+start = "hit"
+end = "cog"
+dict = ["hot","dot","dog","lot","log"]
+
+Return
+
+  [
+    ["hit","hot","dot","dog","cog"],
+    ["hit","hot","lot","log","cog"]
+  ]
+Note:
+
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+
+====================================================================
+
+
+clasclass Solution {
+public:
+    vector<vector<string>> findLadders(string start, string end, unordered_set<string> &dict) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<string> > ret;
+        vector<string> a_ret;
+        
+        if (start == end) {
+            a_ret.push_back(start);
+            a_ret.push_back(end);
+            ret.push_back(a_ret);
+        }
+        
+        map<string, int> dp;
+        
+        map<string, vector<string> > pre;
+        vector<string> str;
+        pre[start] = str;
+        
+        string cur_str;
+        dp.insert(make_pair(start, 1));
+        map<string , int>::iterator iter = dp.begin();
+        vector<string> vis;
+        vis.push_back(start);
+        bool flag = false;
+        string last;
+        string layerend = start;
+        int length = start.length();
+        for (int m = 0; m < vis.size(); m++) {
+           /* if (dp.find(end) != dp.end() && dp[vis[m]] >= dp[end]) {
+                break;
+            }*/
+            
+            //dict.erase(vis[m]);
+            
+            for (int j = 0; j < length; j++) {
+                for (int k = 0; k < 26; k++) {
+                    cur_str = vis[m];
+                    if (cur_str[j] == 'a' + k) {
+                        continue;
+                    }
+                    cur_str[j] = 'a' + k;
+                    
+                    if (cur_str == end) {
+                        dp.insert(make_pair(end, dp[vis[m]] + 1));
+                        pre[end].push_back(vis[m]);
+                        flag = true;
+                    } else if (dict.find(cur_str) != dict.end()) {
+                        if (dp.find(cur_str) == dp.end()) {
+                            dp.insert(make_pair(cur_str, dp[vis[m]] + 1));
+                            pre[cur_str].push_back(vis[m]);
+                            vis.push_back(cur_str);
+                            last = cur_str;
+                        } else {
+                            if (dp[cur_str] == dp[vis[m]] + 1) {
+                                pre[cur_str].push_back(vis[m]);
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            
+            if (vis[m] == layerend) {
+                layerend = last;
+                if (flag) {
+                    break;
+                }
+            }
+        }
+        
+        // get result
+        return getResult(start, end, pre);
+    }
+    
+    vector<vector<string> > getResult(string start, string end, map<string, vector<string> > pre) {
+        vector<vector<string> > ret;
+        vector<string> a_ret;
+        vector<vector<string> > sub;
+        
+        vector<string>& pre_node = pre[end];
+        for (int i = 0; i < pre_node.size(); i++) {
+            if (pre_node[i] == start) {
+                a_ret.push_back(start);
+                a_ret.push_back(end);
+                ret.push_back(a_ret);
+                break;
+            }
+            
+            sub = getResult(start, pre_node[i], pre);
+            for (int i = 0; i < sub.size(); i++) {
+                a_ret.clear();
+                for (int j = 0; j < sub[i].size(); j++) {
+                    a_ret.push_back(sub[i][j]);
+                }
+                a_ret.push_back(end);
+                ret.push_back(a_ret);
+            }
+        }
+        
+        return ret;
+    }
+};
+
+};
