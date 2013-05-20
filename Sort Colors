@@ -1,0 +1,82 @@
+Sort Colors
+
+Given an array with n objects colored red, white or blue, sort them so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+
+Note:
+You are not suppose to use the library's sort function for this problem.
+
+===========================================================================
+
+class Solution {
+public:
+    void sortColors(int A[], int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (n == 0 || n == 1) {
+            return;
+        }
+        
+        int red_count = 0;
+        int gre_count = 0;
+        int blu_count = 0;
+        for (int i = 0; i < n; i++) {
+            if (A[i] == 0) {
+                red_count++;
+            }
+            if (A[i] == 1) {
+                gre_count++;
+            }
+            if (A[i] == 2) {
+                blu_count++;
+            }
+        }
+        
+        int red_end = red_count;
+        int gre_end = red_count + gre_count;
+        int i = 0;
+        int j = red_end;
+        int k = gre_end;
+        int tmp;
+        int count = 0;
+        while (count < n) {
+            while (i >= 0 && i < red_end && A[i] == 0) {
+                i++;
+                count++;
+            }
+            
+            while (j >= red_end && j < gre_end && A[j] == 1) {
+                j++;
+                count++;
+            }
+            
+            while (k >= gre_end && k < n && A[k] == 2) {
+                k++;
+                count++;
+            }
+            
+            if (i >= 0 && i < red_end && A[i] != 0) {
+                if (j >= red_end && j < gre_end && A[j] == 0) {
+                    tmp = A[i];
+                    A[i] = A[j];
+                    A[j] = tmp;
+                } else if (k >= gre_end && k < n && A[k] == 0) {
+                    tmp = A[i];
+                    A[i] = A[k];
+                    A[k] = tmp;
+                }
+            }
+            
+            if (j >= red_end && j < gre_end && A[j] != 1) {
+                if (k >= gre_end && k < n && A[k] == 1) {
+                    tmp = A[k];
+                    A[k] = A[j];
+                    A[j] = tmp;
+                }
+            }
+        }
+        
+        return;
+    }
+};
