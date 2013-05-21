@@ -1,0 +1,86 @@
+Populating Next Right Pointers in Each Node
+
+Given a binary tree
+
+    struct TreeLinkNode {
+      TreeLinkNode *left;
+      TreeLinkNode *right;
+      TreeLinkNode *next;
+    }
+Populate each next pointer to point to its next right node. If there is no next right node, 
+the next pointer should be set to NULL.
+
+Initially, all next pointers are set to NULL.
+
+Note:
+
+You may only use constant extra space.
+You may assume that it is a perfect binary tree (ie, all leaves are at the same level, 
+and every parent has two children).
+For example,
+Given the following perfect binary tree,
+
+         1
+       /  \
+      2    3
+     / \  / \
+    4  5  6  7
+After calling your function, the tree should look like:
+
+         1 -> NULL
+       /  \
+      2 -> 3 -> NULL
+     / \  / \
+    4->5->6->7 -> NULL
+
+=====================================================================================
+
+/**
+ * Definition for binary tree with next pointer.
+ * struct TreeLinkNode {
+ *  int val;
+ *  TreeLinkNode *left, *right, *next;
+ *  TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (!root) {
+            return;
+        }
+        
+        vector<TreeLinkNode*> node_list;
+        TreeLinkNode* pre = NULL;
+        node_list.push_back(root);
+        
+        for (int i = 0; i < node_list.size(); i++) {
+            if (node_list[i]->left) {
+                node_list.push_back(node_list[i]->left);
+                node_list.push_back(node_list[i]->right);
+            }
+        }
+        
+        int layer_end = 2;
+        for (int i = 0; i <= node_list.size(); i++) {
+            if (i == 0) {
+                pre = node_list[i];
+                continue;
+            } else if (i - 1 == 0) {
+                pre->next = NULL;
+            } else if (i - 1 == layer_end) {
+                pre->next = NULL;
+                layer_end = layer_end * 2 + 2;
+            } else {
+                pre->next = node_list[i];
+            }
+            
+            if (i != node_list.size()) {
+                pre = node_list[i];
+            }
+        }
+        
+    }
+};
