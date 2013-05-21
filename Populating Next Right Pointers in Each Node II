@@ -1,0 +1,80 @@
+Populating Next Right Pointers in Each Node II
+
+Follow up for problem "Populating Next Right Pointers in Each Node".
+
+What if the given tree could be any binary tree? Would your previous solution still work?
+
+Note:
+
+You may only use constant extra space.
+For example,
+Given the following binary tree,
+
+         1
+       /  \
+      2    3
+     / \    \
+    4   5    7
+After calling your function, the tree should look like:
+
+         1 -> NULL
+       /  \
+      2 -> 3 -> NULL
+     / \    \
+    4-> 5 -> 7 -> NULL
+
+======================================================================================
+
+/**
+ * Definition for binary tree with next pointer.
+ * struct TreeLinkNode {
+ *  int val;
+ *  TreeLinkNode *left, *right, *next;
+ *  TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (!root) {
+            return;
+        }
+        
+        vector<TreeLinkNode*> node_list;
+        vector<int> level_list;
+        TreeLinkNode* pre = NULL;
+        node_list.push_back(root);
+        level_list.push_back(0);
+        
+        for (int i = 0; i < node_list.size(); i++) {
+            if (node_list[i]->left) {
+                node_list.push_back(node_list[i]->left);
+                level_list.push_back(level_list[i] + 1);
+            }
+            
+            if (node_list[i]->right) {
+                node_list.push_back(node_list[i]->right);
+                level_list.push_back(level_list[i] + 1);
+            }
+        }
+        
+        for (int i = 0; i <= node_list.size(); i++) {
+            if (i == 0) {
+                pre = node_list[i];
+                continue;
+            } else if (i == node_list.size()) {
+                pre->next = NULL;
+                break;
+            } else if (level_list[i - 1] < level_list[i]) {
+                pre->next = NULL;
+            } else {
+                pre->next = node_list[i];
+            }
+            
+            pre = node_list[i];
+        }
+        
+    }
+};
