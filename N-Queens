@@ -1,0 +1,129 @@
+N-Queens
+
+The n-queens puzzle is the problem of placing n queens on an n�n chessboard such that no two queens attack each other.
+
+
+
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
+
+For example,
+There exist two distinct solutions to the 4-queens puzzle:
+
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+
+================================================================================
+
+
+class Solution {
+public:
+    map<int, bool> row;
+    map<int, bool> col;
+    map<int, bool> bias;
+    map<int, bool> anti_bias;
+    
+    void resetMap(int n) {
+        row.clear();
+        col.clear();
+        bias.clear();
+        anti_bias.clear();
+        
+        for (int i = 0; i < n; i++) {
+            row.insert(make_pair(i, false));
+            col.insert(make_pair(i, false));
+        }
+        
+        for (int i = 1 - n; i <= n - 1; i++) {
+            bias.insert(make_pair(i, false));
+        }
+        
+        for (int i = 0; i <= 2 * n - 2; i++) {
+            anti_bias.insert(make_pair(i, false));
+        }
+    }
+    
+    vector<vector<string> > solveNQueens(int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<string> > ret;
+        vector<string> a_ret;
+        
+        resetMap(n);
+        
+        solve(n, 0, 0, &ret, a_ret);
+        
+        return ret;
+    }
+    
+    void solve(int n, int i, int j, vector<vector<string> >* ret, vector<string> a_ret) {        
+        if (isValid(i, j)) {
+            a_ret.push_back(genStr(j, n));
+            row[i] = true;
+            col[j] = true;
+            bias[i - j] = true;
+            anti_bias[i + j] = true;
+            
+            if (j + 1 < n) {
+                solve(n, i, j + 1, ret, a_ret);
+            } else {
+                solve(n, i + 1, 0, ret, a_ret);
+            }
+            
+            if (a_ret.size() == n) {
+                ret->push_back(a_ret);
+            }
+        
+            row[i] = false;
+            col[j] = false;
+            bias[i - j] = false;
+            anti_bias[i + j] = false;
+            a_ret.pop_back();
+        }
+        
+        if (j + 1 < n) {
+            solve(n, i, j + 1, ret, a_ret);
+        } else if (i + 1 < n) {
+            if (row[i] == false) {
+                return;
+            }
+            solve(n, i + 1, 0, ret, a_ret);
+        }
+        
+        return;
+    }
+    
+    string genStr(int j, int n) {
+        string str;
+        for (int i = 0; i < n; i++) {
+            if (i == j) {
+                str += 'Q';
+            } else {
+                str += '.';
+            }
+        }
+        
+        return str;
+    }
+    
+    bool isValid(int i, int j) {
+        return !row[i] && !col[j] && !bias[i - j] && !anti_bias[i + j];
+    }
+};
+
+
+
+
+
+
+
