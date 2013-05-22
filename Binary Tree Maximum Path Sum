@@ -1,0 +1,72 @@
+Binary Tree Maximum Path Sum
+
+Given a binary tree, find the maximum path sum.
+
+The path may start and end at any node in the tree.
+
+For example:
+Given the below binary tree,
+
+       1
+      / \
+     2   3
+Return 6.
+
+========================================================
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+  public:
+    int maxPathSum(TreeNode *root) {
+      int ret;
+
+      if (!root) {
+        return 0;
+      }
+
+      ret = root->val;
+      int side;
+      maxSum(root, &side, &ret);
+
+      return ret;
+    }
+
+    void maxSum(TreeNode* root, int *side, int *ret) {
+      if (!root) {
+        *side = 0;
+        return;
+      }
+
+      int left_side, right_side;
+      *side = root->val;
+      if (root->left) {
+        maxSum(root->left, &left_side, ret);
+        *ret = std::max(*ret, left_side);
+        *ret = std::max(*ret, left_side + root->val);
+        *side = std::max(*side, left_side + root->val);
+      }
+
+      if (root->right) {
+        maxSum(root->right, &right_side, ret);
+        *ret = std::max(*ret, right_side);
+        *ret = std::max(*ret, right_side + root->val);
+        if (root->left) {
+          *side = std::max(*side, max(left_side, right_side) + root->val);
+        } else {
+          *side = std::max(*side, right_side + root->val);
+        }
+      }
+
+      if (root->left && root->right) {
+        *ret = std::max(*ret, left_side + right_side + root->val);
+      }
+    }
+};
