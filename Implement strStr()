@@ -1,0 +1,46 @@
+Implement strStr()
+
+Implement strStr().
+
+Returns a pointer to the first occurrence of needle in haystack, or null if needle is not part of haystack.
+
+=======================================================
+
+class Solution {
+public:
+    char *strStr(char *haystack, char *needle) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        if (haystack == NULL) {
+            return NULL;
+        }
+        
+        if (needle == NULL) {
+            return haystack;
+        }        
+        
+        
+        int haylen = strlen(haystack);
+        int needlen = strlen(needle);
+        
+        if (haylen < needlen) return NULL;
+        
+        int i = 0;
+        int j;
+        while (i <= haylen - needlen) {
+            j = 0;
+            
+            while (j < needlen && haystack[i + j] == needle[j]) {
+                j++;
+            }
+            
+            if (needle[j] == '\0') {
+                return &haystack[i];
+            }
+            
+            i++;
+        }
+        
+        return NULL;
+    }
+};
