@@ -1,0 +1,81 @@
+N-Queens II
+
+Follow up for N-Queens problem.
+
+[pic]
+
+Now, instead outputting board configurations, return the total number of distinct solutions.
+
+=================================================================
+
+class Solution {
+public:
+
+    int totalNQueens(int n) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int ret = 0;
+        
+        bool** nqueen = new bool*[n];
+      for(int i = 0; i < n; i++)
+			nqueen[i] = new bool[n];
+
+		for(int i = 0; i < n; i++)
+			for(int j = 0; j < n; j++)
+				nqueen[i][j] = false;
+        
+        solve(n, 0, 0, &ret, nqueen);
+        
+        return ret;
+    }
+    
+    void solve(int n,
+               int i,
+               int j,
+               int *ret,
+               bool** nqueen) {
+        if (i == n || j == n) {
+            return;
+        }
+        
+        if (isValid(i, j, n, nqueen)) {
+            nqueen[i][j] = true;
+            
+            if (i == n - 1) {
+                (*ret)++;
+                return;
+            }
+            
+            solve(n, i + 1, 0, ret, nqueen);
+            
+            nqueen[i][j] = false;
+        }
+        
+        solve(n, i, j + 1, ret, nqueen);
+    }
+    
+    bool isValid(int i,
+                 int j,
+                 int n,
+                 bool** nqueen) {
+        for (int k = 0; k < i; k++) {
+            if (nqueen[k][j]) {
+                return false;
+            }
+        }
+        
+        for (int k = i - 1, m = j - 1; k >= 0 && m >= 0; k--, m--) {
+            if (nqueen[k][m]) {
+                return false;
+            }
+        }
+        
+        for (int k = i - 1, m = j + 1; k >= 0 && m < n; k--, m++) {
+            if (nqueen[k][m]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
