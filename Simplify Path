@@ -1,0 +1,65 @@
+Simplify Path
+
+Given an absolute path for a file (Unix-style), simplify it.
+
+For example,
+path = "/home/", => "/home"
+path = "/a/./b/../../c/", => "/c"
+
+Corner Cases:
+Did you consider the case where path = "/../"?
+In this case, you should return "/".
+Another corner case is the path might contain multiple slashes '/' together, such as "/home//foo/".
+In this case, you should ignore redundant slashes and return "/home/foo".
+
+==================================================================
+
+class Solution {
+  public:
+    string simplifyPath(string path) {
+      // Start typing your C/C++ solution below
+      // DO NOT write int main() function
+      string ret;
+
+      string sub_path;
+      int start = 0;
+      vector<string> s;
+      while (getNextSubPath(path, start, &sub_path)) {
+        if (sub_path == "..") {
+          if (!s.empty()) {
+            s.pop_back();
+          }
+        } else if (sub_path != "." && !sub_path.empty()) {
+          s.push_back("/" + sub_path);
+        }
+
+        start = start + sub_path.length() + 1;
+      }
+
+      if (s.empty()) {
+        return "/";
+      }
+
+      for (int i = 0; i < s.size(); i++) {
+        ret += s[i];
+      }
+
+      return ret;
+    }
+
+    bool getNextSubPath(string path, int start, string* sub_path) {
+      if (start >= path.length()) {
+        return false;
+      }
+
+      sub_path->clear();
+      int end = path.find("/", start + 1);
+
+      if (end == string::npos) {
+        end = path.length();
+      }
+
+      *sub_path = path.substr(start + 1, end - start - 1);
+      return true;
+    }
+};
