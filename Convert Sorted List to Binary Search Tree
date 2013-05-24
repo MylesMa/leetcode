@@ -1,0 +1,104 @@
+Convert Sorted List to Binary Search Tree
+
+Given a singly linked list where elements are sorted in ascending order, convert it to a height balanced BST.
+
+==============================================================
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+  public:
+    TreeNode *sortedListToBST(ListNode *head) {
+      // Start typing your C/C++ solution below
+      // DO NOT write int main() function
+
+      if (!head) {
+        return NULL;
+      }
+
+      ListNode* ptr = head;
+      while (ptr->next) {
+        ptr = ptr->next; 
+      }
+
+      if (head == ptr) {
+        TreeNode* root = new TreeNode(head->val);
+        return root;
+      }
+
+      return constructBST(head, ptr);
+    }
+
+    TreeNode *constructBST(ListNode *begin, ListNode *end) {
+      if (!begin || !end) {
+        return NULL;
+      }
+
+      if (begin == end) {
+        TreeNode* root = new TreeNode(begin->val);
+        return root;
+      }
+
+      ListNode* pre_mid;
+      ListNode* mid;
+      getMidNode(begin, end, mid, pre_mid);
+
+      TreeNode* root = new TreeNode(mid->val);
+      if (mid != begin) {
+        root->left = constructBST(begin, pre_mid);
+      }
+      
+      root->right = constructBST(mid->next, end);
+
+      return root;
+    }
+
+    void getMidNode(ListNode *begin, ListNode *end, ListNode*& mid, ListNode*& pre_mid) {
+      if (begin == end) {
+        mid = begin;
+        pre_mid = NULL;
+        return;
+      }
+
+      ListNode* step1 = NULL;
+      ListNode* step2 = NULL;
+      pre_mid = NULL;
+      do {
+        if (!step1) {
+          step1 = begin;
+        } else {
+          pre_mid = step1;
+          step1 = step1->next;
+        } 
+
+        if (!step2) {
+          step2 = begin;
+        } else {
+          step2 = step2->next;
+        }
+
+        if (step2 == end) {
+          break;
+        } else {
+          step2 = step2->next;
+        }
+      } while (step1 && step2 && !(step2 == end));
+
+      mid = step1;
+    }
+};
