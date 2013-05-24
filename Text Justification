@@ -1,0 +1,96 @@
+Text Justification
+
+Given an array of words and a length L, format the text such that each line has exactly L characters and is fully (left and right) justified.
+
+You should pack your words in a greedy approach; that is, pack as many words as you can in each line. Pad extra spaces ' ' when necessary so that each line has exactly L characters.
+
+Extra spaces between words should be distributed as evenly as possible. If the number of spaces on a line do not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
+
+For the last line of text, it should be left justified and no extra space is inserted between words.
+
+For example,
+words: ["This", "is", "an", "example", "of", "text", "justification."]
+L: 16.
+
+Return the formatted lines as:
+
+[
+   "This    is    an",
+   "example  of text",
+   "justification.  "
+]
+
+====================================================================================
+
+class Solution {
+  public:
+    vector<string> fullJustify(vector<string> &words, int L) {
+      // Start typing your C/C++ solution below
+      // DO NOT write int main() function
+
+      vector<string> ret;
+      string a_ret;
+      int length;
+      int cur;
+      int i = 0;
+      while (i < words.size()) {
+        a_ret.clear();
+        length = 0;
+        cur = i;
+        while (length < L &&
+               cur < words.size()) {
+          if (cur == i) {
+            if (words[i].length() >= L) {
+              break;
+            }
+            length = words[i].length();
+          } else {
+            if (length + words[cur].length() + 1 <= L) {
+              length += words[cur].length() + 1;
+              words[cur - 1] = words[cur - 1] + ' ';
+            } else {
+              break;
+            }
+          }
+          cur++;
+        }
+        
+        if (cur == words.size()) {
+            for (int k = i; k < cur; k++) {
+                a_ret += words[k];
+            }
+            while (a_ret.length() < L) {
+                a_ret += ' ';
+            }
+            ret.push_back(a_ret);
+            break;
+        }
+
+        if (cur == i) {
+          a_ret =  words[cur];
+          
+          ret.push_back(a_ret);
+          i = cur + 1;
+          continue;
+        }
+
+        // feed remain black
+        for (int j = i; length < L; j++) {
+          if (j >= cur - 1 || j == words.size()) {
+            j = i;
+          }
+          words[j] = words[j] + ' ';
+          length++;
+        }
+        
+        for(int k = i; k < cur; k++) {
+          a_ret += words[k];
+        }
+        ret.push_back(a_ret);
+
+        i = cur;
+      }
+
+      return ret;
+    }
+};
