@@ -1,0 +1,82 @@
+Valid Number
+
+Validate if a given string is numeric.
+
+Some examples:
+"0" => true
+" 0.1 " => true
+"abc" => false
+"1 a" => false
+"2e10" => true
+
+Note: It is intended for the problem statement to be ambiguous. 
+You should gather all requirements up front before implementing one.
+
+=================================================================
+
+class Solution {
+ public:
+     bool isNumber(const char *s) {
+         // Start typing your C/C++ solution below
+         // DO NOT write int main() function
+         while (*s == ' ') {
+            s++;
+         }
+         
+         if (*s == '+' || *s == '-') {
+            s++;
+         }
+         
+         bool is_exp = false;
+         bool is_dot = false;
+         bool is_begin = false;
+         bool is_end = false;
+         while (*s != '\0') {
+             if (*s == ' ') {
+                while (*s == ' ') {
+                    s++;         
+                }
+                if (*s != '\0') {
+                    return false;
+                } else {
+                    break;
+                }
+             }
+             if (*s == '.') {
+                 if (is_exp || is_dot || is_end) {
+                    return false;
+                 }
+                 is_dot = true;
+             } else if (*s == 'e') {
+                 if (is_exp || !is_begin) {
+                    return false;
+                 }
+                 is_exp = true;
+             } else if (isdigit(*s)) {
+                 if (!is_exp) {
+                    is_begin = true;
+                 }
+                 else {
+                    is_end = true;
+                 }
+             } else if (*s == '+' || *s == '-') {
+                 if (*(s-1) != 'e') {
+                    return false;
+                 }
+             } else {
+                 return false;
+             }
+             s++;
+         }
+         
+         if (!is_begin) {
+            return false;
+         }
+         
+         if (is_exp && !is_end) {
+            return false;
+         }
+         
+         return true;
+     }
+ };
