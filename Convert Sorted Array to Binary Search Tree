@@ -1,0 +1,35 @@
+Convert Sorted Array to Binary Search Tree
+
+Given an array where elements are sorted in ascending order, convert it to a height balanced BST.
+
+===========================================
+
+class Solution {
+  public:
+    TreeNode *sortedArrayToBST(vector<int> &num) {
+      if (num.empty()) {                                                                                                                                                                                                                     
+        return NULL;
+      }
+
+      return constructBST(num, 0, num.size() - 1);
+    }
+
+    TreeNode *constructBST(vector<int> num, int begin, int end) {
+      if (begin > end) {
+        return NULL;
+      }
+
+      if (begin == end) {
+        TreeNode* root = new TreeNode(num[begin]);
+        return root;
+      }
+
+      int mid = (begin + end) / 2;
+      TreeNode* root = new TreeNode(num[mid]);
+
+      root->left = constructBST(num, begin, mid - 1);
+      root->right = constructBST(num, mid + 1, end);
+
+      return root;
+    }
+};
