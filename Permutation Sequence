@@ -17,6 +17,29 @@ Note: Given n will be between 1 and 9 inclusive.
 
 ================================================================
 
+Permutation Sequence
+
+The set [1,2,3,…,n] contains a total of n! unique permutations.
+
+By listing and labeling all of the permutations in order,
+We get the following sequence (ie, for n = 3):
+
+"123"
+"132"
+"213"
+"231"
+"312"
+"321"
+Given n and k, return the kth permutation sequence.
+
+Note: Given n will be between 1 and 9 inclusive.
+
+=====================================================================
+
+static bool comp(int a, int b) {
+  return a > b;
+}
+
 class Solution {
   public:
     string getPermutation(int n, int k) {
@@ -26,14 +49,32 @@ class Solution {
       if (n == 0 || k == 0) {
         return ret;
       }
+      
+      int count = 0;
+      int pos = 0;
+      //LOG(INFO) << "count: " << count << "\t pos:" << pos;
 
       vector<int> num_list;
       for (int i = 1; i <= n; i++) {
         num_list.push_back(i);
       }
+      getNextPermutationCount(n, 0, k, count, pos);
 
-      for (int i = 2; i <= k; i++) {
-        nextPermutation(num_list);                                                                                                                                                                                                           
+      sort(num_list.begin() + num_list.size() - pos, num_list.end(), comp);
+
+      for (int i = count; i < k;) {
+        count = 0;
+        pos = 0;
+        getNextPermutationCount(n, i, k, count, pos);
+
+        if (i + 1 == k) {
+          nextPermutation(num_list);
+          break;                                                                                                                                                                                                                             
+        } else {
+          nextPermutation(num_list);
+          sort(num_list.begin() + num_list.size() - pos, num_list.end(), comp);
+        }
+        i = count;
       }
 
       for (int i = 0; i < n; i++) {
@@ -43,7 +84,22 @@ class Solution {
       return ret;
     }
 
-    void nextPermutation(vector<int>& num_list) {
+    void getNextPermutationCount(int n, int cur, int k, int& count, int& pos) {
+      int inc_count = 1;
+      pos = 0;
+      count = 0;
+      for (int i = 1; i <= n; i++) {
+        inc_count *= i;
+        if (cur + inc_count > k) {
+          break;
+        }
+        pos = i;
+        count = inc_count;
+      }
+      count += cur;
+    }
+
+    bool nextPermutation(vector<int>& num_list) {
       int swap_index = -1;
       for (int i = num_list.size() - 1; i >= 0; i--) {
         if (i - 1 >= 0 && num_list[i] > num_list[i - 1]) {
@@ -57,7 +113,7 @@ class Solution {
       if (swap_index != -1) {
         for (int i = swap_index + 1; i < num_list.size(); i++) {
           if (num_list[i] > num_list[swap_index] &&
-              (min == -1 || num_list[i] < num_list[min])) {
+                (min == -1 || num_list[i] < num_list[min])) {
             min = i;
           }
         }
@@ -67,6 +123,10 @@ class Solution {
         num_list[min] = tmp;
 
         sort(num_list.begin() + swap_index + 1, num_list.end());
+
+        return true;
+      } else {
+        return false;
       }
     }
 };
