@@ -1,0 +1,72 @@
+Permutation Sequence
+
+The set [1,2,3,…,n] contains a total of n! unique permutations.
+
+By listing and labeling all of the permutations in order,
+We get the following sequence (ie, for n = 3):
+
+"123"
+"132"
+"213"
+"231"
+"312"
+"321"
+Given n and k, return the kth permutation sequence.
+
+Note: Given n will be between 1 and 9 inclusive.
+
+================================================================
+
+class Solution {
+  public:
+    string getPermutation(int n, int k) {
+      // Start typing your C/C++ solution below
+      // DO NOT write int main() function
+      string ret;
+      if (n == 0 || k == 0) {
+        return ret;
+      }
+
+      vector<int> num_list;
+      for (int i = 1; i <= n; i++) {
+        num_list.push_back(i);
+      }
+
+      for (int i = 2; i <= k; i++) {
+        nextPermutation(num_list);                                                                                                                                                                                                           
+      }
+
+      for (int i = 0; i < n; i++) {
+        ret += '0' + num_list[i];
+      }
+
+      return ret;
+    }
+
+    void nextPermutation(vector<int>& num_list) {
+      int swap_index = -1;
+      for (int i = num_list.size() - 1; i >= 0; i--) {
+        if (i - 1 >= 0 && num_list[i] > num_list[i - 1]) {
+          swap_index = i - 1;
+          break;
+        }
+      }
+
+      int min = -1;
+      int tmp;
+      if (swap_index != -1) {
+        for (int i = swap_index + 1; i < num_list.size(); i++) {
+          if (num_list[i] > num_list[swap_index] &&
+              (min == -1 || num_list[i] < num_list[min])) {
+            min = i;
+          }
+        }
+
+        tmp = num_list[swap_index];
+        num_list[swap_index] = num_list[min];
+        num_list[min] = tmp;
+
+        sort(num_list.begin() + swap_index + 1, num_list.end());
+      }
+    }
+};
