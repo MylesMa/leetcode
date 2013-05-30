@@ -1,0 +1,97 @@
+Scramble String
+
+Given a string s1, we may represent it as a binary tree by partitioning it to two non-empty substrings recursively.
+
+Below is one possible representation of s1 = "great":
+
+    great
+   /    \
+  gr    eat
+ / \    /  \
+g   r  e   at
+           / \
+          a   t
+To scramble the string, we may choose any non-leaf node and swap its two children.
+
+For example, if we choose the node "gr" and swap its two children, it produces a scrambled string "rgeat".
+
+    rgeat
+   /    \
+  rg    eat
+ / \    /  \
+r   g  e   at
+           / \
+          a   t
+We say that "rgeat" is a scrambled string of "great".
+
+Similarly, if we continue to swap the children of nodes "eat" and "at", it produces a scrambled string "rgtae".
+
+    rgtae
+   /    \
+  rg    tae
+ / \    /  \
+r   g  ta  e
+       / \
+      t   a
+We say that "rgtae" is a scrambled string of "great".
+
+Given two strings s1 and s2 of the same length, determine if s2 is a scrambled string of s1.
+
+========================================================
+
+class Solution {
+  public:
+    bool isScramble(string s1, string s2) {
+      // Start typing your C/C++ solution below
+      // DO NOT write int main() function
+
+      if (s1.length() != s2.length()) {
+        return false;
+      }
+
+      vector<vector<vector<bool> > > is_match(s1.length() + 1,
+                                              vector<vector<bool> >(s1.length() + 1,
+                                                                    vector<bool>(s1.length() + 1,
+                                                                                 false)));
+
+      for(int i = 0; i < s1.length(); i++) {
+        for(int j = 0; j < s2.length(); j++) {
+          if (s1[i] == s2[j]) {
+            is_match[1][i][j] = true;
+          } else {
+            is_match[1][i][j] = false;
+          }
+        }
+      }
+
+      for(int len = 2; len <= s1.length(); len++) {
+        for(int s1_begin = 0; s1_begin < s1.length(); s1_begin++) {
+          int s1_end = s1_begin + len - 1;
+          if (s1_end >= s1.length()) {
+            break;
+          }
+
+          for(int s2_beg = 0; s2_beg < s2.length(); s2_beg++) {
+            int s2End = s2_beg + len - 1;
+            if (s2End >= s2.length())
+            break;
+
+            is_match[len][s1_begin][s2_beg] = false;
+            for(int s1_mid = s1_begin; s1_mid < s1_end; s1_mid++) {
+              int left_size = s1_mid - s1_begin + 1;
+              int right_size = len - left_size;
+              int s2_mid = s2_beg + left_size - 1;
+              bool res1 = is_match[left_size][s1_begin][s2_beg] && is_match[right_size][s1_mid + 1][s2_mid + 1];
+
+              s2_mid = s2End - left_size;
+              bool res2 = is_match[left_size][s1_begin][s2_mid + 1] && is_match[right_size][s1_mid + 1][s2_beg];
+
+              is_match[len][s1_begin][s2_beg] = is_match[len][s1_begin][s2_beg] || res1 || res2;
+            }
+          }
+        }                                                                                                                                                                                                                                    
+      }
+
+      return is_match[s1.length()][0][0];
+    }
+};
