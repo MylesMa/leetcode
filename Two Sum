@@ -1,0 +1,60 @@
+struct NumInfo{
+    int index;
+    int value;
+};
+
+static bool comp(const NumInfo& num1, const NumInfo num2) {
+    return num1.value < num2.value;
+}
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int> &numbers, int target) {
+        vector<int> ret;
+        vector<NumInfo> num_list;
+
+        int res;
+
+        int size = numbers.size();
+        for (int i = 0; i < size; i++) {
+            NumInfo num;
+            num.index = i;
+            num.value = numbers[i];
+            num_list.push_back(num);
+        }
+        sort(num_list.begin(), num_list.end(), comp);
+
+        for (int i = 0; i < size; i++) {
+            res = find(num_list, i + 1, target - num_list[i].value);
+            if (res != -1) {
+                ret.push_back(num_list[i].index + 1);
+                ret.push_back(res + 1);
+                break;
+            }
+        }
+        
+        sort(ret.begin(), ret.end());
+        
+        return ret;
+    }
+
+    int find(const vector<NumInfo>& num_list, const int begin, const int target) {
+        int left = begin;
+        int right = num_list.size() - 1;
+        int mid;
+
+        while(left <= right) {
+             mid = (left + right) / 2;
+
+             if (target == num_list[mid].value) {
+                 return num_list[mid].index;
+             } else if (target < num_list[mid].value) {
+                 right = mid - 1;
+             } else {
+                 left = mid + 1;
+             }
+        }
+
+        return -1;
+    }
+};
